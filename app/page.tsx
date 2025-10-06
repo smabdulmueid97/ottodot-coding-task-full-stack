@@ -154,76 +154,97 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <main className="container mx-auto px-4 py-10 max-w-2xl">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
-          Math Problem Generator
-        </h1>
+    <div className="relative min-h-screen bg-cyber-vault bg-cover bg-center bg-fixed">
+      <div className="min-h-screen bg-slate-950/85 backdrop-blur-sm">
+        <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
+          <header className="space-y-4 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-200/80">
+              Smart Practice Portal
+            </p>
+            <h1 className="text-4xl font-bold text-white sm:text-5xl">Math Problem Generator</h1>
+            <p className="mx-auto max-w-xl text-base text-slate-200 sm:text-lg">
+              Generate adaptive Primary 5 math questions and receive instant feedback on every answer.
+            </p>
+          </header>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 transition-transform">
-          <button
-            onClick={generateProblem}
-            disabled={isGenerating || isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 ease-in-out transform hover:scale-[1.01]"
-          >
-            {isGenerating ? 'Generating...' : 'Generate New Problem'}
-          </button>
-        </div>
-
-        {error && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-            {error}
+          <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 shadow-2xl shadow-black/40 backdrop-blur">
+            <button
+              onClick={generateProblem}
+              disabled={isGenerating || isSubmitting}
+              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-indigo-500/90 px-5 py-3 text-base font-semibold text-white shadow-xl shadow-indigo-900/40 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-200 disabled:cursor-not-allowed disabled:bg-indigo-900/40 disabled:text-indigo-100/60"
+            >
+              <span>{isGenerating ? 'Generating a new challenge...' : 'Generate A New Problem'}</span>
+            </button>
           </div>
-        )}
 
-        {problemText && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Problem</h2>
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">{problemText}</p>
+          {error && (
+            <div className="rounded-3xl border border-red-400/40 bg-red-500/10 px-5 py-4 text-sm text-red-100 shadow-xl shadow-red-950/30 backdrop-blur">
+              {error}
+            </div>
+          )}
 
-            <form onSubmit={submitAnswer} className="space-y-5">
-              <div>
-                <label htmlFor="answer" className="block text-sm font-medium text-gray-600 mb-2">
-                  Your Answer
-                </label>
-                <input
-                  type="number"
-                  id="answer"
-                  value={userAnswer}
-                  onChange={(event) => setUserAnswer(event.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your answer"
-                  required
-                />
+          {problemText && (
+            <section className="space-y-6 rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-2xl shadow-black/40 backdrop-blur">
+              <div className="space-y-3">
+                <h2 className="text-2xl font-semibold text-white">Problem</h2>
+                <p className="text-base leading-relaxed text-indigo-100">{problemText}</p>
               </div>
 
-              <button
-                type="submit"
-                disabled={!userAnswer || isSubmitting || isGenerating}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 ease-in-out transform hover:scale-[1.01]"
-              >
-                {isSubmitting ? 'Checking...' : 'Submit Answer'}
-              </button>
-            </form>
-          </div>
-        )}
+              <form onSubmit={submitAnswer} className="space-y-5">
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="answer"
+                    className="text-sm font-medium uppercase tracking-wide text-indigo-200/80"
+                  >
+                    Your Answer
+                  </label>
+                  <input
+                    type="number"
+                    id="answer"
+                    value={userAnswer}
+                    onChange={(event) => setUserAnswer(event.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-5 py-3 text-lg text-white placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-4 focus:ring-indigo-500/20"
+                    placeholder="Enter your best attempt"
+                    required
+                  />
+                </div>
 
-        {feedback && (
-          <div
-            className={`rounded-2xl shadow-lg p-6 mb-6 border-2 ${
-              isCorrect ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'
-            }`}
-          >
-            <h2 className="text-xl font-semibold mb-3 text-gray-800">
-              {isCorrect ? 'Nice work! That is correct.' : 'Let us try that again.'}
-            </h2>
-            <p className="text-gray-700 leading-relaxed mb-2">{feedback}</p>
-            {correctAnswer !== null && !isCorrect && (
-              <p className="text-sm text-gray-600">Correct Answer: {correctAnswer}</p>
-            )}
-          </div>
-        )}
-      </main>
+                <button
+                  type="submit"
+                  disabled={!userAnswer || isSubmitting || isGenerating}
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500/90 px-5 py-3 text-base font-semibold text-white shadow-xl shadow-emerald-900/40 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-emerald-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-200 disabled:cursor-not-allowed disabled:bg-emerald-900/40 disabled:text-emerald-100/60"
+                >
+                  <span>{isSubmitting ? 'Checking your work...' : 'Submit Answer'}</span>
+                </button>
+              </form>
+            </section>
+          )}
+
+          {feedback && (
+            <section
+              className={`rounded-3xl border px-8 py-6 text-base shadow-2xl shadow-black/30 backdrop-blur ${
+                isCorrect
+                  ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-100'
+                  : 'border-amber-400/40 bg-amber-500/10 text-amber-100'
+              }`}
+            >
+              <h2 className="text-2xl font-semibold">
+                {isCorrect ? 'Nice work! That is correct.' : 'Let us try that again.'}
+              </h2>
+              <p className="mt-2 leading-relaxed">{feedback}</p>
+              {correctAnswer !== null && !isCorrect && (
+                <p className="mt-4 text-sm font-medium">
+                  Correct Answer: <span className="font-semibold">{correctAnswer}</span>
+                </p>
+              )}
+            </section>
+          )}
+
+          <footer className="mt-auto text-center text-xs font-semibold uppercase tracking-[0.35em] text-slate-400/60">
+            Practice. Reflect. Improve.
+          </footer>
+        </main>
+      </div>
     </div>
   )
 }
