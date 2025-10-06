@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 
 export type Database = {
   public: {
@@ -22,6 +22,7 @@ export type Database = {
           problem_text?: string
           final_answer?: number
         }
+        Relationships: []
       }
       math_problem_submissions: {
         Row: {
@@ -48,8 +49,13 @@ export type Database = {
           is_correct?: boolean
           feedback?: string
         }
+        Relationships: []
       }
     }
+    Views: {}
+    Functions: {}
+    Enums: {}
+    CompositeTypes: {}
   }
 }
 

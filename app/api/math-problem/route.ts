@@ -1,7 +1,6 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { mathTutorModel } from '@/lib/gemini'
 import { supabase } from '@/lib/supabaseClient'
-import type { Database } from '@/lib/supabaseClient'
 
 type GeneratedProblem = {
   problem_text: string
@@ -59,7 +58,7 @@ export async function POST() {
 
     const insertResult = await supabase
       .from('math_problem_sessions')
-      .insert<Database['public']['Tables']['math_problem_sessions']['Insert'][]>([
+      .insert([
         {
           problem_text: problemText,
           final_answer: finalAnswer,
@@ -86,3 +85,4 @@ export async function POST() {
     )
   }
 }
+

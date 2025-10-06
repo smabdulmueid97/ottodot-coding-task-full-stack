@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { FormEvent, useState } from 'react'
 
@@ -13,6 +13,48 @@ type SubmitResponse = {
   isCorrect: boolean
   feedback: string
   correctAnswer: number
+}
+
+type ApiErrorPayload = {
+  message?: string
+}
+
+function getApiErrorMessage(payload: unknown, fallbackMessage: string) {
+  if (payload && typeof payload === 'object' && 'message' in payload) {
+    const { message } = payload as ApiErrorPayload
+    if (typeof message === 'string' && message.trim().length > 0) {
+      return message
+    }
+  }
+
+  return fallbackMessage
+}
+
+function isProblemResponse(value: unknown): value is ProblemResponse {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const candidate = value as Partial<ProblemResponse>
+  return (
+    typeof candidate.sessionId === 'string' &&
+    !!candidate.problem &&
+    typeof candidate.problem === 'object' &&
+    typeof candidate.problem.problem_text === 'string'
+  )
+}
+
+function isSubmitResponse(value: unknown): value is SubmitResponse {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const candidate = value as Partial<SubmitResponse>
+  return (
+    typeof candidate.isCorrect === 'boolean' &&
+    typeof candidate.feedback === 'string' &&
+    typeof candidate.correctAnswer === 'number'
+  )
 }
 
 export default function Home() {
@@ -39,18 +81,18 @@ export default function Home() {
         method: 'POST',
       })
 
-      const data = (await response.json()) as ProblemResponse | { message?: string }
+      const payload = (await response.json()) as unknown
 
       if (!response.ok) {
-        throw new Error(data?.message ?? 'Failed to generate a new problem.')
+        throw new Error(getApiErrorMessage(payload, 'Failed to generate a new problem.'))
       }
 
-      if (!data || !('sessionId' in data) || !data.problem?.problem_text) {
+      if (!isProblemResponse(payload)) {
         throw new Error('Received an unexpected response from the server.')
       }
 
-      setSessionId(data.sessionId)
-      setProblemText(data.problem.problem_text)
+      setSessionId(payload.sessionId)
+      setProblemText(payload.problem.problem_text)
     } catch (err) {
       console.error('Problem generation failed', err)
       setError(
@@ -86,19 +128,19 @@ export default function Home() {
         }),
       })
 
-      const data = (await response.json()) as SubmitResponse | { message?: string }
+      const payload = (await response.json()) as unknown
 
       if (!response.ok) {
-        throw new Error(data?.message ?? 'Failed to submit your answer.')
+        throw new Error(getApiErrorMessage(payload, 'Failed to submit your answer.'))
       }
 
-      if (!data || !('isCorrect' in data) || typeof data.feedback !== 'string') {
+      if (!isSubmitResponse(payload)) {
         throw new Error('Received an unexpected response from the server.')
       }
 
-      setFeedback(data.feedback)
-      setIsCorrect(data.isCorrect)
-      setCorrectAnswer(data.correctAnswer ?? null)
+      setFeedback(payload.feedback)
+      setIsCorrect(payload.isCorrect)
+      setCorrectAnswer(payload.correctAnswer ?? null)
     } catch (err) {
       console.error('Answer submission failed', err)
       setError(
